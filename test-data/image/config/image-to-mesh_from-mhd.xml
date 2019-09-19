@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MeshTool_Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MeshTool_config.xsd">
+  <Operation_Image2Mesh path_to_input_file="test-data/image/input/spheres.mhd" path_to_output_file="test-data/image/output/spheres.vtu">
+    <MeshCriteria_global cell_radius_edge_ratio="2.1" cell_size="3" facet_angle="30.0" facet_distance="2" facet_size="2"/>
+    <MeshCriteria_SubDomain cell_size="1" dimension="3" domain_id="1"/>
+  </Operation_Image2Mesh>
+</MeshTool_Config>

@@ -1,0 +1,5 @@
+test-data/image/input/spheres.mhd filter=lfs diff=lfs merge=lfs -text
+test-data/image/input/spheres.vti filter=lfs diff=lfs merge=lfs -text
+test-data/image/input/spheres.vtu filter=lfs diff=lfs merge=lfs -text
+test-data/image/input/spheres.zraw filter=lfs diff=lfs merge=lfs -text
+test-data/image/input/brain_atlas.mha filter=lfs diff=lfs merge=lfs -text

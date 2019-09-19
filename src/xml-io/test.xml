@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<CorneaMeshingParameters>
+  <AnteriorSurface>
+    <ZernikeCoefficient n="1" m="2"> 3.42</ZernikeCoefficient>
+    <ZernikeCoefficient n="0" m="2"> 3.42</ZernikeCoefficient>
+  </AnteriorSurface>
+  <PosteriorSurface>
+    <ZernikeCoefficient n="1" m="2"> 3.42</ZernikeCoefficient>
+    <ZernikeCoefficient n="7" m="2"> 3.42</ZernikeCoefficient>
+  </PosteriorSurface>
+  <PupilRadius>5</PupilRadius>
+  <SurfaceDistance>0.1</SurfaceDistance>
+  <MeshCriteria cell_radius_edge_ratio="2.1" cell_size="0.1" facet_angle="30.0" facet_distance="0.05" facet_size="0.4"/>
+  <CorneaGenerationCriteria max_number_zernike_coeffs="10" surface_thickness="1.0" offset_along_z="1.0"/>
+  <AblationProfile>
+    <EllipsoidSurface>
+      <EllipsoidCenter>
+        <x> 3.23</x>
+        <y> 3.23</y>
+        <z> 3.23</z>
+      </EllipsoidCenter>
+      <EllipsoidHalfAxes>
+        <xAxis> 3.23</xAxis>
+        <yAxis> 3.23</yAxis>
+        <zAxis> 3.23</zAxis>
+      </EllipsoidHalfAxes>
+    </EllipsoidSurface>
+  </AblationProfile>
+</CorneaMeshingParameters>

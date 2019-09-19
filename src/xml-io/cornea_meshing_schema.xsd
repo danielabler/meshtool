@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+
+
+<xs:complexType name="ZernikeCoefficientType">
+    <xs:simpleContent>
+      <xs:extension base="xs:float">
+        <xs:attribute name="n" type="xs:integer" use="required"/>
+        <xs:attribute name="m" type="xs:integer" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+</xs:complexType>
+
+<xs:complexType name="ZernikeCoefficientType_single_index">
+    <xs:simpleContent>
+      <xs:extension base="xs:float">
+        <xs:attribute name="j" type="xs:integer" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+</xs:complexType> 
+
+<xs:complexType name="ZernikeSurfaceType">
+      <xs:choice>
+      <xs:element name="ZernikeCoefficient" type="ZernikeCoefficientType" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element name="ZernikeCoefficientSingleIndex" type="ZernikeCoefficientType_single_index" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:choice>
+</xs:complexType>
+
+<xs:complexType name="MeshCriteriaGlobalType">
+    	<xs:attribute name="facet_angle" type="xs:double" use="required"></xs:attribute>
+    	<xs:attribute name="facet_size" type="xs:double" use="required"></xs:attribute>
+    	<xs:attribute name="facet_distance" type="xs:double" use="required"></xs:attribute>
+    	<xs:attribute name="cell_radius_edge_ratio" type="xs:double" use="required"></xs:attribute>
+    	<xs:attribute name="cell_size" type="xs:double" use="required"></xs:attribute>
+</xs:complexType>
+
+<xs:complexType name="CorneaGenerationCriteriaGlobalType">
+    	<xs:attribute name="max_number_zernike_coeffs" type="xs:int" use="required"></xs:attribute>
+    	<xs:attribute name="surface_thickness" type="xs:double" use="required"></xs:attribute>
+    	<xs:attribute name="offset_along_z" type="xs:double" use="required"></xs:attribute>
+      <xs:attribute name="path_to_output" type="xs:string" use="required"></xs:attribute>
+</xs:complexType>
+
+<xs:complexType name="LenticuleGenerationCriteriaGlobalType">
+    <xs:attribute name="max_number_zernike_coeffs" type="xs:int" use="required"></xs:attribute>
+    <xs:attribute name="lenticule_radius" type="xs:double" use="required"></xs:attribute>
+    <xs:attribute name="cap_thickness" type="xs:double" use="required"></xs:attribute>
+    <xs:attribute name="lenticule_thickness" type="xs:double" use="required"></xs:attribute>
+    <xs:attribute name="lenticule_surface_distance" type="xs:double" use="required"></xs:attribute>
+</xs:complexType>
+
+
+<xs:complexType name="ConeBoundaryType">
+  <xs:attribute name="angle" type="xs:double" use="required"></xs:attribute>
+</xs:complexType>
+
+<xs:complexType name="CylinderBoundaryType">
+  <xs:attribute name="radius" type="xs:double" use="required"></xs:attribute>
+</xs:complexType>
+
+<xs:complexType name="CorneaBoundaryType">
+  <xs:choice>
+    <xs:element name="Cone" type="ConeBoundaryType" minOccurs="1" maxOccurs="1"/>
+    <xs:element name="Cylinder" type="CylinderBoundaryType" minOccurs="1" maxOccurs="1"/>
+  </xs:choice>
+</xs:complexType>
+
+<xs:complexType name="CorneaMeshingParametersType">
+      <xs:all>
+          <xs:element name="AnteriorSurface" type="ZernikeSurfaceType"/>
+          <xs:element name="PosteriorSurface" type="ZernikeSurfaceType"/>
+          <xs:element name="PosteriorSurfaceLenticule" type="ZernikeSurfaceType"  minOccurs="0" maxOccurs="1"/>
+          <xs:element name="PupilRadius" type="xs:float"/>
+          <xs:element name="SurfaceDistance" type="xs:float"/>
+          <xs:element name="MeshCriteria" type="MeshCriteriaGlobalType"/>
+          <xs:element name="CorneaGenerationCriteria" type="CorneaGenerationCriteriaGlobalType"/>
+          <xs:element name="LenticuleGenerationCriteria" type="LenticuleGenerationCriteriaGlobalType" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="CorneaBoundary" type="CorneaBoundaryType"/>
+      </xs:all>
+</xs:complexType> 
+
+
+<xs:element name="CorneaMeshingParameters" type="CorneaMeshingParametersType"/>
+</xs:schema>
