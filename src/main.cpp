@@ -89,7 +89,6 @@ int main(int argc, char **argv) {
     LOG(DEBUG) << " Command line arguments: '-c' = " << c_flag << ", '-x' = " << x_flag<< ", '-m' = " << m_flag;
 
 
-
     /// CATCH CURRENT EXECUTION DIRECTORY (IF NOT SPECIFIED)
     LOG(DEBUG) << "Getting current execution directory...";
     std::string selfpath  = get_selfpath();
@@ -106,6 +105,17 @@ int main(int argc, char **argv) {
 
         LOG(FATAL)  << "Cannot retrieve current working directory, please specify: flag -b <path-to-executable-directory>";
         exit(EXIT_FAILURE);
+    }
+
+
+    if (x_flag == false)
+    {
+        LOG(INFO) << "No schema file specified, using default location";
+        path_to_xsd.append(base_path);
+        path_to_xsd.append("/../");
+        path_to_xsd.append("src/xml-io/imaging_meshing_schema.xsd");
+        x_flag = true;
+        LOG(INFO) << "Schema file: " << path_to_xsd;
     }
 
 
