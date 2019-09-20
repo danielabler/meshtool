@@ -108,17 +108,6 @@ int main(int argc, char **argv) {
     }
 
 
-    if (x_flag == false)
-    {
-        LOG(INFO) << "No schema file specified, using default location";
-        path_to_xsd.append(base_path);
-        path_to_xsd.append("/../");
-        path_to_xsd.append("src/xml-io/imaging_meshing_schema.xsd");
-        x_flag = true;
-        LOG(INFO) << "Schema file: " << path_to_xsd;
-    }
-
-
     if (mesh_tool_mode == "image")
     {
         LOG(INFO) << "Running MeshTool in 'image' mode";
@@ -128,6 +117,15 @@ int main(int argc, char **argv) {
         if (x_flag == true)
         {
             LOG(DEBUG) << "XSD schema location given as parameter ... updating settings";
+            imageMeshTool.setPathsToXSDs("ImageMeshTool", path_to_xsd);
+        }
+        else{
+            LOG(INFO) << "No schema file specified, using default location";
+            path_to_xsd.append(base_path);
+            path_to_xsd.append("/../");
+            path_to_xsd.append("src/xml-io/imaging_meshing_schema.xsd");
+            x_flag = true;
+            LOG(INFO) << "Schema file: " << path_to_xsd;
             imageMeshTool.setPathsToXSDs("ImageMeshTool", path_to_xsd);
         }
         imageMeshTool.initConfigFile(path_to_config_file);
@@ -161,6 +159,15 @@ int main(int argc, char **argv) {
         if (x_flag == true)
         {
             LOG(INFO) << "XSD schema location given as parameter ... updating settings";
+            corneaMeshTool.setPathsToXSDs("CorneaMeshTool", path_to_xsd);
+        }
+        else{
+            LOG(INFO) << "No schema file specified, using default location";
+            path_to_xsd.append(base_path);
+            path_to_xsd.append("/../");
+            path_to_xsd.append("src/xml-io/cornea_meshing_schema.xsd");
+            x_flag = true;
+            LOG(INFO) << "Schema file: " << path_to_xsd;
             corneaMeshTool.setPathsToXSDs("CorneaMeshTool", path_to_xsd);
         }
 
