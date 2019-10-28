@@ -159,6 +159,7 @@ double evaluate_zernike_surface(j_coeff_map_type j_coeff_map, double rho, double
   for (int j=0; j<= j_coeff_max; j++)
   {
     double coeff = 0.0;
+    LOG(DEBUG) << "j = " << j << "; j_coeff_map.count(j) = " << j_coeff_map.count(j);
     if (j_coeff_map.count(j)) {
       coeff = j_coeff_map[j];
       LOG(DEBUG) << "j = " << j << ", coeff = " << coeff;
@@ -168,6 +169,7 @@ double evaluate_zernike_surface(j_coeff_map_type j_coeff_map, double rho, double
     double zernike = zernike_term(nm_coeff.n, nm_coeff.m, rho, phi);
     LOG(DEBUG) << "j = " << j << " : zernike term = " << zernike << " , coeff = " << coeff ;
     Z_from_zernike = Z_from_zernike + coeff * zernike;
+    LOG(DEBUG) << "z_from_zernike = " << Z_from_zernike;
   }
   return Z_from_zernike;
 }

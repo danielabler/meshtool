@@ -31,6 +31,8 @@ typedef CGAL::Mesh_complex_3_in_triangulation_3<Tr> C3t3;
 typedef CGAL::Mesh_criteria_3<Tr> Mesh_criteria;
 typedef Mesh_criteria::Facet_criteria    Facet_criteria;
 typedef Mesh_criteria::Cell_criteria     Cell_criteria;
+typedef CGAL::Mesh_constant_domain_field_3<Mesh_domain::R, Mesh_domain::Index> Sizing_field;
+
 // Polyline
 typedef K::Point_3 Point;
 typedef std::vector<Point>        Polyline_3;
@@ -128,7 +130,7 @@ namespace cmt {
      LOG(DEBUG) << "--- Detected Cylinder boundary with radius = " << cornea_boundary_global.radius << " -> " << boundary_criterium;
    }
 
-   if (anterior_surface.inout <=0 && posterior_surface.inout >0  && boundary_criterium <= 0){
+   if (anterior_surface.inout <=0 && posterior_surface.inout >0  && boundary_criterium <= 0 ){
    //  if (anterior_surface.inout <=0 && boundary_criterium <= 0){
      //LOG(INFO) << "inside"; 
       return -1;
@@ -140,101 +142,109 @@ namespace cmt {
   }
 
 
-
-    double create_lenticule(double x, double y, double z){
-        // Anterior Surface
-        zernike::zernike_surface_return anterior_surface  = zernike::create_zernike_surface(x, y, z, cornea_global.surface_anterior,
-                                                                                            cornea_generation_criteria_global.max_number_zernike_coeffs,
-                                                                                            cornea_generation_criteria_global.offset_along_z,
-                                                                                            lenticule_generation_criteria_global.cap_thickness,
-                                                                                            lenticule_generation_criteria_global.lenticule_thickness);
-        //LOG(INFO) << "Cornea anterior surface z at 0,0 : " << anterior_surface.z_at_0_0;
-        // Posterior Surface
-        double shift_posterior = lenticule_generation_criteria_global.lenticule_surface_distance + anterior_surface.z_at_0_0 + lenticule_generation_criteria_global.cap_thickness;
-        //LOG(INFO) << "Cornea shift : " << shift_posterior;
-
-        zernike::zernike_surface_return posterior_surface = zernike::create_zernike_surface(x, y, z, cornea_global.surface_posterior,
-                                                                                            cornea_generation_criteria_global.max_number_zernike_coeffs,
-                                                                                            cornea_generation_criteria_global.offset_along_z,
-                                                                                            shift_posterior,
-                                                                                            lenticule_generation_criteria_global.lenticule_thickness);
-        //LOG(INFO) << "Cornea posterior surface z at 0,0 : " << posterior_surface.z_at_0_0;
-
-        // Additional boundary criterusm
-        double boundary_criterium = -1;
-        // CONE
-        if (cornea_boundary_global.type == cone_boundary) {
-            double alpha_rad = CGAL_PI / 180.0 * cornea_boundary_global.angle;
-            double z_apex = lenticule_generation_criteria_global.lenticule_radius /  std::tan(alpha_rad) +  anterior_surface.z_max;
-            boundary_criterium = create_cone(x, y, z, alpha_rad, z_apex);
-            LOG(DEBUG) << "--- Detected Cone boundary with angle = " << cornea_boundary_global.angle << " -> " << boundary_criterium;
-            //LOG(INFO) << "--- Cone vertex Z = " << z_apex;
-        }
-        else if (cornea_boundary_global.type == cylinder_boundary) {
-            boundary_criterium = create_cylinder( x, y, z, cornea_boundary_global.radius);
-            LOG(DEBUG) << "--- Detected Cylinder boundary with radius = " << cornea_boundary_global.radius << " -> " << boundary_criterium;
-        }
-
-        if (anterior_surface.inout <=0 && posterior_surface.inout >0  && boundary_criterium <= 0){
-        //if (anterior_surface.inout <=0 && boundary_criterium <= 0){
-            //LOG(INFO) << "inside";
-            return -1;
-        }
-        else{
-            //LOG(INFO) << "outside";
-            return 1;
-        }
-    }
-
-
-
-//double create_lenticule(double x, double y, double z){
 //
-//  // Anterior Surface == anterior cornea surface, but shifted by cap thickness
-//  zernike::zernike_surface_return anterior_surface  = zernike::create_zernike_surface(x, y, z, cornea_global.surface_anterior,
-//                                                                                      lenticule_generation_criteria_global.max_number_zernike_coeffs,
-//                                                                                      cornea_generation_criteria_global.offset_along_z,
-//                                                                                      0,
-//                                                                                      lenticule_generation_criteria_global.lenticule_thickness);
-//  //LOG(INFO) << "lenticule anterior surface z at 0,0 : " << anterior_surface.z_at_0_0;
-//  // Posterior Surface
-//  //double shift_posterior = lenticule_generation_criteria_global.cap_thickness + lenticule_generation_criteria_global.lenticule_thickness;
-//    double shift_posterior = cornea_global.surface_distance + anterior_surface.z_at_0_0; // true thickness
-//  //LOG(INFO) << "lenticule surface shift : " << shift_posterior;
-//  zernike::zernike_surface_return posterior_surface = zernike::create_zernike_surface(x, y, z, cornea_global.lenticule_surface_posterior,
-//                                                                                      lenticule_generation_criteria_global.max_number_zernike_coeffs,
-//                                                                                      cornea_generation_criteria_global.offset_along_z,
-//                                                                                      shift_posterior,
-//                                                                                      lenticule_generation_criteria_global.lenticule_thickness);
-//  //LOG(INFO) << "lenticule posterior surface z at 0,0 : " << posterior_surface.z_at_0_0;
+//    double create_lenticule(double x, double y, double z){
+//        // Anterior Surface
+//        zernike::zernike_surface_return anterior_surface  = zernike::create_zernike_surface(x, y, z, cornea_global.surface_anterior,
+//                                                                                            cornea_generation_criteria_global.max_number_zernike_coeffs,
+//                                                                                            cornea_generation_criteria_global.offset_along_z,
+//                                                                                            lenticule_generation_criteria_global.cap_thickness,
+//                                                                                            lenticule_generation_criteria_global.lenticule_thickness);
+//        // Posterior Surface
+//        double shift_posterior = lenticule_generation_criteria_global.lenticule_surface_distance + anterior_surface.z_at_0_0 + lenticule_generation_criteria_global.cap_thickness;
+//        zernike::zernike_surface_return posterior_surface = zernike::create_zernike_surface(x, y, z, cornea_global.lenticule_surface_posterior ,
+//                                                                                            cornea_generation_criteria_global.max_number_zernike_coeffs,
+//                                                                                            cornea_generation_criteria_global.offset_along_z,
+//                                                                                            shift_posterior,
+//                                                                                            lenticule_generation_criteria_global.lenticule_thickness);
+////        zernike::zernike_surface_return posterior_surface = zernike::create_zernike_surface(x, y, z, cornea_global.surface_posterior ,
+////                                                                                            cornea_generation_criteria_global.max_number_zernike_coeffs,
+////                                                                                            cornea_generation_criteria_global.offset_along_z,
+////                                                                                            shift_posterior,
+////                                                                                            lenticule_generation_criteria_global.lenticule_thickness);
 //
+//        // Additional boundary criteriums
 //
-//  // Additional boundary criterusm
-//  double boundary_criterium = -1;
-//  // CONE
-//  if (cornea_boundary_global.type == cone_boundary) {
-//    double alpha_rad = CGAL_PI / 180.0 * cornea_boundary_global.angle;
-//    double z_apex = lenticule_generation_criteria_global.lenticule_radius /  std::tan(alpha_rad) +  anterior_surface.z_max;
-//    boundary_criterium = create_cone(x, y, z, alpha_rad, z_apex);
-//    LOG(DEBUG) << "--- Detected Cone boundary with angle = " << cornea_boundary_global.angle << " -> " << boundary_criterium;
-//    //LOG(INFO) << "--- Cone vertex Z = " << z_apex;
-//  }
-//  else if (cornea_boundary_global.type == cylinder_boundary) {
-//    boundary_criterium = create_cylinder( x, y, z, cornea_boundary_global.radius);
-//    LOG(DEBUG) << "--- Detected Cylinder boundary with radius = " << cornea_boundary_global.radius << " -> " << boundary_criterium;
-//  }
+//        double boundary_criterium = -1;
+//        // CONE
+//        if (cornea_boundary_global.type == cone_boundary) {
+//            double alpha_rad = CGAL_PI / 180.0 * cornea_boundary_global.angle;
+//            double z_apex = lenticule_generation_criteria_global.lenticule_radius /  std::tan(alpha_rad) +  anterior_surface.z_max;
+//            boundary_criterium = create_cone(x, y, z, alpha_rad, z_apex);
+//            LOG(DEBUG) << "--- Detected Cone boundary with angle = " << cornea_boundary_global.angle << " -> " << boundary_criterium;
+//            //LOG(INFO) << "--- Cone vertex Z = " << z_apex;
+//        }
+//        else if (cornea_boundary_global.type == cylinder_boundary) {
+//            boundary_criterium = create_cylinder( x, y, z, cornea_boundary_global.radius);
+//            LOG(DEBUG) << "--- Detected Cylinder boundary with radius = " << cornea_boundary_global.radius << " -> " << boundary_criterium;
+//        }
 //
-//  if (anterior_surface.inout <=0 && posterior_surface.inout >0  && boundary_criterium <= 0){
-// // if (anterior_surface.inout <=0  && boundary_criterium <= 0){
-//    //LOG(INFO) << "inside";
-//    return -1;
-//  }
-//  else{
-//    //LOG(INFO) << "outside";
-//    return 1;
-//  }
-//}
-//
+//        if (anterior_surface.inout <=0 && posterior_surface.inout >0  && boundary_criterium <= 0){
+//        //if (anterior_surface.inout <=0 && boundary_criterium <= 0){
+//            //LOG(INFO) << "inside";
+//            return -1;
+//        }
+//        else{
+//            //LOG(INFO) << "outside";
+//            return 1;
+//        }
+//    }
+
+
+
+double create_lenticule(double x, double y, double z){
+
+  LOG(DEBUG) << " --- ";
+
+    // Anterior Surface == anterior cornea surface, but shifted by cap thickness
+  zernike::zernike_surface_return anterior_surface  = zernike::create_zernike_surface(x, y, z, cornea_global.surface_anterior,
+                                                                                      lenticule_generation_criteria_global.max_number_zernike_coeffs,
+                                                                                      cornea_generation_criteria_global.offset_along_z,
+                                                                                      lenticule_generation_criteria_global.cap_thickness,
+                                                                                      lenticule_generation_criteria_global.lenticule_thickness);
+  LOG(DEBUG) << "lenticule anterior surface z at 0,0 : " << anterior_surface.z_at_0_0;
+  // Posterior Surface
+  //double shift_posterior = lenticule_generation_criteria_global.cap_thickness + lenticule_generation_criteria_global.lenticule_thickness;
+  //  double shift_posterior = cornea_global.surface_distance + anterior_surface.z_at_0_0; // true thickness
+  double shift_posterior = anterior_surface.z_at_0_0 + lenticule_generation_criteria_global.lenticule_surface_distance + lenticule_generation_criteria_global.cap_thickness;
+
+  zernike::zernike_surface_return posterior_surface = zernike::create_zernike_surface(x, y, z, cornea_global.lenticule_surface_posterior ,
+                                                                                      lenticule_generation_criteria_global.max_number_zernike_coeffs,
+                                                                                      cornea_generation_criteria_global.offset_along_z,
+                                                                                      shift_posterior,
+                                                                                      lenticule_generation_criteria_global.lenticule_thickness);
+  LOG(DEBUG) << "lenticule posterior surface z at 0,0 : " << posterior_surface.z_at_0_0;
+
+  LOG(DEBUG) << "cap_thickness : " << lenticule_generation_criteria_global.cap_thickness;
+  LOG(DEBUG) << "lenticule_surface_distance : " << lenticule_generation_criteria_global.lenticule_surface_distance ;
+  LOG(DEBUG) << "lenticule surface shift : " << shift_posterior;
+
+  // Additional boundary criterusm
+  double boundary_criterium = -1;
+  // CONE
+  if (cornea_boundary_global.type == cone_boundary) {
+    double alpha_rad = CGAL_PI / 180.0 * cornea_boundary_global.angle;
+    double z_apex = lenticule_generation_criteria_global.lenticule_radius /  std::tan(alpha_rad) +  anterior_surface.z_max;
+    boundary_criterium = create_cone(x, y, z, alpha_rad, z_apex);
+    LOG(DEBUG) << "--- Detected Cone boundary with angle = " << cornea_boundary_global.angle << " -> " << boundary_criterium;
+    LOG(DEBUG) << "--- Cone vertex Z = " << z_apex << " zmax = " << anterior_surface.z_max;
+  }
+  else if (cornea_boundary_global.type == cylinder_boundary) {
+    boundary_criterium = create_cylinder( x, y, z, lenticule_generation_criteria_global.lenticule_radius);
+    LOG(DEBUG) << "--- Detected Cylinder boundary with radius = " << lenticule_generation_criteria_global.lenticule_radius << " -> " << boundary_criterium;
+  }
+
+  if (anterior_surface.inout <=0 && posterior_surface.inout >0  && boundary_criterium <= 0 && z <= 2.9){
+  //if (posterior_surface.inout <=0  && boundary_criterium <= 0){
+    //LOG(INFO) << "inside";
+    return -1;
+  }
+  else{
+    //LOG(INFO) << "outside";
+    return 1;
+  }
+}
+
 
 
     surface_group is_point_on_surface(double x, double y, double z, double epsilon)
@@ -470,7 +480,7 @@ void CorneaMeshTool::initConfigFile(std::string path_to_config_file)
         LOG(INFO) << "--  j = " << zernike_j << ", coeff = " <<  j_coeff_map_ant[zernike_j];
       }
     //---- POSTERIOR SURFACE
-    LOG(INFO) << "=== reading anterior surface ...";
+    LOG(INFO) << "=== reading posterior surface ...";
     CorneaMeshingParametersType::PosteriorSurface_type posterior_surface_xml = meshing_params->PosteriorSurface();
     ZernikeSurfaceType::ZernikeCoefficient_sequence& zernike_coefficient_seq_posterior (posterior_surface_xml.ZernikeCoefficient());
     for (ZernikeSurfaceType::ZernikeCoefficient_iterator i (zernike_coefficient_seq_posterior.begin()); i !=zernike_coefficient_seq_posterior.end(); i++)
@@ -521,46 +531,38 @@ void CorneaMeshTool::initConfigFile(std::string path_to_config_file)
 
 
 
-      //---- DEFINE ZERNIKE SURFACE
-      zernike::zernike_surface posterior_surface_lenticule;
-
     CorneaMeshingParametersType::PosteriorSurfaceLenticule_optional posterior_surface_lenticule_xml = meshing_params->PosteriorSurfaceLenticule();
+    zernike::j_coeff_map_type j_coeff_map_post_lenticule;
     if (posterior_surface_lenticule_xml.present()) {
         //---- LENTICULE
         LOG(INFO) << "=== reading lenticule posterior surface ... ";
         // READING SURFACE INFORMATION
         zernike::zernike_coeff zernike_coeff_lenticule;
         float coeff_lenticule;
-        zernike::j_coeff_map_type j_coeff_map_post_lenticule;
         //CorneaMeshingParametersType::PosteriorSurfaceLenticule_type posterior_surface_lenticule_xml = meshing_params->PosteriorSurfaceLenticule();
         // double index notation n, m
-        ZernikeSurfaceType::ZernikeCoefficient_sequence &zernike_coefficient_seq_posterior_lenticule(
-                posterior_surface_lenticule_xml->ZernikeCoefficient());
-        for (ZernikeSurfaceType::ZernikeCoefficient_iterator i(zernike_coefficient_seq_posterior_lenticule.begin());
-             i != zernike_coefficient_seq_posterior_lenticule.end(); i++) {
-            ZernikeCoefficientType &zernike_coeff_xml(*i);
+        ZernikeSurfaceType::ZernikeCoefficient_sequence& zernike_coefficient_seq_posterior_lenticule (posterior_surface_lenticule_xml->ZernikeCoefficient());
+        for (ZernikeSurfaceType::ZernikeCoefficient_iterator i (zernike_coefficient_seq_posterior_lenticule.begin()); i != zernike_coefficient_seq_posterior_lenticule.end(); i++) {
+            ZernikeCoefficientType& zernike_coeff_xml(*i);
             zernike_coeff_lenticule.n = zernike_coeff_xml.n();
             zernike_coeff_lenticule.m = zernike_coeff_xml.m();
             coeff_lenticule = zernike_coeff_xml;
-            int zernike_j_lenticule = zernike::zernike_nm_to_j(zernike_coeff);
+            int zernike_j_lenticule = zernike::zernike_nm_to_j(zernike_coeff_lenticule);
             //LOG(INFO) << "m = " << zernike_coeff.m() << ", n = " << zernike_coeff.n() << ", coeff = " <<  zernike_coeff;
             LOG(INFO) << "--  n = " << zernike_coeff_lenticule.n << ", m = " << zernike_coeff_lenticule.m << ", j = "
                       << zernike_j_lenticule << ", coeff = " << coeff_lenticule;
             j_coeff_map_post_lenticule[zernike_j_lenticule] = coeff_lenticule;
         }
         // single index notation j
-        ZernikeSurfaceType::ZernikeCoefficientSingleIndex_sequence &zernike_coefficient_single_index_seq_posterior_lenticule(
-                posterior_surface_lenticule_xml->ZernikeCoefficientSingleIndex());
+        ZernikeSurfaceType::ZernikeCoefficientSingleIndex_sequence& zernike_coefficient_single_index_seq_posterior_lenticule(posterior_surface_lenticule_xml->ZernikeCoefficientSingleIndex());
         for (ZernikeSurfaceType::ZernikeCoefficientSingleIndex_iterator i(
                 zernike_coefficient_single_index_seq_posterior_lenticule.begin());
              i != zernike_coefficient_single_index_seq_posterior_lenticule.end(); i++) {
-            ZernikeCoefficientType_single_index &zernike_coeff_xml(*i);
+            ZernikeCoefficientType_single_index& zernike_coeff_xml(*i);
             int zernike_j_lenticule = zernike_coeff_xml.j();
             j_coeff_map_post_lenticule[zernike_j_lenticule] = zernike_coeff_xml;
             LOG(INFO) << "--  j = " << zernike_j_lenticule << ", coeff = " << j_coeff_map_ant[zernike_j_lenticule];
         }
-
-        posterior_surface_lenticule.zernike_coefficients = j_coeff_map_post_lenticule;
 
 
         CorneaMeshingParametersType::LenticuleGenerationCriteria_optional lenticulecriteria_xml = meshing_params->LenticuleGenerationCriteria();
@@ -576,24 +578,26 @@ void CorneaMeshTool::initConfigFile(std::string path_to_config_file)
                       << lenticule_generation_criteria_global.lenticule_thickness;
             lenticule_generation_criteria_global.lenticule_surface_distance = lenticulecriteria_xml->lenticule_surface_distance();
             LOG(INFO) << "   - lenticule surface distance :                             "
-                      << lenticule_generation_criteria_global.lenticule_thickness;
+                      << lenticule_generation_criteria_global.lenticule_surface_distance;
             lenticule_generation_criteria_global.lenticule_radius = lenticulecriteria_xml->lenticule_radius();
             LOG(INFO) << "   - lenticule radius:                     "
                       << lenticule_generation_criteria_global.lenticule_radius;
             lenticule_generation_criteria_global.cap_thickness = lenticulecriteria_xml->cap_thickness();
             LOG(INFO) << "   - cap thickness:                                 "
                       << lenticule_generation_criteria_global.cap_thickness;
-
-            posterior_surface_lenticule.pupil_radius = lenticule_generation_criteria_global.lenticule_radius;
-
         }
 
+        zernike::zernike_surface posterior_surface_lenticule;
+        posterior_surface_lenticule.zernike_coefficients = j_coeff_map_post_lenticule;
+        posterior_surface_lenticule.pupil_radius = lenticule_generation_criteria_global.lenticule_radius;
+
+        cornea_global.lenticule_surface_posterior= posterior_surface_lenticule;
         this->cornea.lenticule_surface_posterior = posterior_surface_lenticule;
 
         //LOG(INFO) << "=== Checking lenticule parameter consistency:";
         if (lenticule_generation_criteria_global.lenticule_surface_distance < lenticule_generation_criteria_global.lenticule_thickness)
         {
-            //LOG(INFO) << "    - lenticule surface distance < lenticule thickness ";
+            LOG(INFO) << "    - lenticule surface distance < lenticule thickness ";
         }
         else{
             LOG(INFO) << "    - WARNING: lenticule surface distance > lenticule thickness ";
@@ -604,10 +608,6 @@ void CorneaMeshTool::initConfigFile(std::string path_to_config_file)
 
         create_lenticule_global = true;
     }
-
-
-
-
 
 
 
@@ -717,15 +717,20 @@ void CorneaMeshTool::meshCornea()
 {
   LOG(INFO) << "======== Starting to mesh cornea ...";
   // Define functions
-  Function f1(&create_cornea);
-  Function_vector v;
-  v.push_back(f1);
+ Function f1(&create_cornea);
+ Function_vector v;
+ v.push_back(f1);
 
-    if (create_lenticule_global)
-    {
-        Function f2(&create_lenticule);
-        v.push_back(f2);
-    }
+ if (create_lenticule_global)
+ {
+     Function f2(&create_lenticule);
+     v.push_back(f2);
+ }
+
+//  Function f1(&create_lenticule);
+//  Function_vector v;
+//  v.push_back(f1);
+
   //std::vector<std::string> vps;
   //vps.push_back("+-");
   // Domain (Warning: Sphere_3 constructor uses square radius !)
@@ -735,20 +740,34 @@ void CorneaMeshTool::meshCornea()
   //Mesh_domain domain(f1, K::Sphere_3(CGAL::ORIGIN, 30.*30.));
   // Set mesh criteria
   /*
-  - facet_angle. This parameter controls the shape of surface facets. Actually, it is a lower bound for the angle (in degree) of surface facets. When boundary surfaces are smooth, the termination of the meshing process is guaranteed if the angular bound is at most 30 degrees.
-  - facet_size. Thi sparameter controls the size of surface facets. Actually, each surface facet has a surface Delaunay ball which is a ball circumscribing the surface facet and centered on the surface patch. The parameter facet_size is either a constant or a spatially variable scalar field, providing an upper bound for the radii of surface Delaunay balls.
-  - facet_distance. This parameter controls the approximation error of boundary and subdivision surfaces. Actually, it is either a constant or a spatially variable scalar field. It provides an upper bound for the distance between the circumcenter of a surface facet and the center of a surface Delaunay ball of this facet.
-  - facet_topology. This parameters controls the set of topological constraints which have to be verified by each surface facet. By default, each vertex of a surface facet has to be located on a surface patch, on a curve segment, or on a corner. It can also be set to check whether the three vertices of a surface facet belongs to the same surface patch. This has to be done cautiously, as such a criteria needs that each surface patches intersection is an input 1-dimensional feature.
+  - facet_angle. This parameter controls the shape of surface facets.
+    Actually, it is a lower bound for the angle (in degree) of surface facets.
+    When boundary surfaces are smooth, the termination of the meshing process is guaranteed if the angular bound is at most 30 degrees.
+  - facet_size. This parameter controls the size of surface facets.
+    Actually, each surface facet has a surface Delaunay ball which is a ball circumscribing the surface facet and centered on the surface patch.
+    The parameter facet_size is either a constant or a spatially variable scalar field, providing an upper bound for the radii of surface Delaunay balls.
+  - facet_distance. This parameter controls the approximation error of boundary and subdivision surfaces.
+    Actually, it is either a constant or a spatially variable scalar field.
+    It provides an upper bound for the distance between the circumcenter of a surface facet and the center of a surface Delaunay ball of this facet.
+  - facet_topology. This parameters controls the set of topological constraints which have to be verified by each surface facet.
+    By default, each vertex of a surface facet has to be located on a surface patch, on a curve segment, or on a corner.
+    It can also be set to check whether the three vertices of a surface facet belongs to the same surface patch. This has to be done cautiously, as such a criteria needs that each surface patches intersection is an input 1-dimensional feature.
   The criteria for mesh cells are governed by two parameters:
   - cell_radius_edge_ratio. This parameter controls the shape of mesh cells (but can't filter slivers, as we discussed earlier). Actually, it is an upper bound for the ratio between the circumradius of a mesh tetrahedron and its shortest edge. There is a theoretical bound for this parameter: the Delaunay refinement process is guaranteed to terminate for values of cell_radius_edge_ratio bigger than 2.
   - cell_size. This parameter controls the size of mesh tetrahedra. It is either a scalar or a spatially variable scalar field. It provides an upper bound on the circumradii of the mesh tetrahedra.
   */
-  Facet_criteria facet_criteria( this->mesh_criteria_global.facet_angle, // angle
-                                 this->mesh_criteria_global.facet_size,  // size
-                                 this->mesh_criteria_global.facet_distance); // approximation
-  Cell_criteria cell_criteria( this->mesh_criteria_global.cell_radius_edge_ratio, // radius-edge ratio,
-                               this->mesh_criteria_global.cell_size); // size
+
+  Sizing_field size(this->mesh_criteria_global.cell_size);
+  //size.set_size(this->mesh_criteria_global.cell_size / 3, 3, 3 );
+  size.set_size(0.01, 3, 3 );
+
+  Facet_criteria facet_criteria(   this->mesh_criteria_global.facet_angle, // angle
+                                   this->mesh_criteria_global.facet_size,  // size
+                                   this->mesh_criteria_global.facet_distance); // approximation
+  Cell_criteria cell_criteria(     this->mesh_criteria_global.cell_radius_edge_ratio, // radius-edge ratio,
+                                 size); // size
   Mesh_criteria criteria(facet_criteria, cell_criteria);
+
 
   /*
   // TODO make features work: include boundary mode here (cone, cylinder)!
@@ -798,6 +817,9 @@ void CorneaMeshTool::meshCornea()
 
   LOG(INFO) << "--- Generating mesh ...";
   // Mesh generation with feature preservation
+
+  // lenticule as subdomain
+
   C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria);
 
   // Output
