@@ -25,7 +25,7 @@ import socket
 def main(argv):
 
     try:
-        opts, args = getopt.getopt(argv, "hi:o:p",["in=", "out=", "pythonpath="])
+        opts, args = getopt.getopt(argv, "hi:o:p:",["in=", "out=", "pythonpath="])
     except getopt.GetoptError:
         print("create_abq.py -i <path_to_vtu_file> -o <path_to_abq_file>")
         print("or")
@@ -34,11 +34,13 @@ def main(argv):
 
     path_file_vtu = ""
     path_file_abq = ""
-    path_python = "/home/dabler/Documents/SoftwareDevelopment/meshtool_github/pre-post-processing"
+    #path_python = "/home/dabler/Documents/SoftwareDevelopment/meshtool_github/pre-post-processing"
+    path_python = "/home/mesher/software/MESHTOOL_source/pre-post-processing"
 
     for opt, arg in opts:
         if opt == "-h":
             print("create_abq.py -i <path_to_vtu_file> -o <path_to_abq_file>")
+            print("(assumes that python functions located at '%s')"%path_python)
             print("or")
             print("create_abq.py -i <path_to_vtu_file> -o <path_to_abq_file> -p <path_to_python_functions>")
             sys.exit()
@@ -53,7 +55,11 @@ def main(argv):
     import CommonHelperFunctions as chf
     import FemModel as fem
 
-    if path_file_vtu == "":
+    if path_file_vtu == "" and path_file_abq == "":
+        print("create_abq.py -i <path_to_vtu_file> -o <path_to_abq_file>")
+        print("or")
+        print("create_abq.py -i <path_to_vtu_file> -o <path_to_abq_file> -p <path_to_python_functions>")
+    elif path_file_vtu == "":
         print("Path to input file missing: '-i <path_to_vtu_file>'")
     elif path_file_abq == "":
         print("Path to output file missing: '-o <path_to_abq_file>'")

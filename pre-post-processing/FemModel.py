@@ -50,14 +50,23 @@ class FemModel():
         self.__write_abq_comment(abq_file, ["ELEMENT DEFINITIONS"])
         all_element_vtk_ids = range(self.mesh.GetNumberOfCells())
         self.__write_abq_element_set_2(abq_file, "ELSET_ALL", all_element_vtk_ids, "./sets/elements.inp")
-        self.__write_abq_comment(abq_file, ["SET DEFINITIONS"])
         # -- ELEMENTSETs, NODESETs, SURFACES go into sets.inp
         rel_path_to_sets_file = "./sets/sets.inp"
         abs_path_to_sets_file = self.__create_abs_from_rel_path( self.path_to_abq_file, rel_path_to_sets_file)
         chf.ensure_dir_exists(abs_path_to_sets_file)
         sets_file = open(abs_path_to_sets_file, 'w')
         self.__write_abq_include(abq_file, rel_path_to_sets_file)
-        # -- 3.3) Nodesets for groups
+        #-- 3.) Elsets for cornes substructures
+        elsets = chf.get_unique_integer_list_from_vtu_array(self.mesh, "cell_array", "ElementBlockIds")
+        elset_dict = {1 : "cornea", 3: "lenticule"}
+        for elsetid in elsets:
+            elset_name = "ELSET_%s"%(elset_dict[elsetid])
+            print("Creating ElementSets for '%s'"%elset_name)
+            selected_cell_vtk_ids = np.where(self.mesh_wrapped.CellData["ElementBlockIds"]==elsetid)[0]
+            self.__write_abq_set(sets_file, elset_name, selected_cell_vtk_ids, set_type="element")
+            #self.__write_abq_element_set_2(abq_file, elset_name, selected_cell_vtk_ids, "./sets/elements.inp")
+        self.__write_abq_comment(abq_file, ["SET DEFINITIONS"])
+        #-- 3.3) Nodesets for groups
         # rim_group, id==3 -> rim with all nodes on rim belonging to rim
         # surface group, id == 1 -> anterior surface, with rim nodes belonging to surface
         # surface group, id == 2 -> posterior surface, with rim nodes belonging to surface
@@ -70,7 +79,7 @@ class FemModel():
                 node_set_name = "NODES_%s_%03i"%(group_name, group_id)
                 groups_name    = "GROUP_%s_%03i"%(group_name, group_id)
                 selected_point_vtk_ids = np.where(self.mesh_wrapped.PointData[group_name]==group_id)[0]
-                self.__write_abq_set(sets_file, node_set_name, selected_point_vtk_ids, set_type="node")    
+                self.__write_abq_set(sets_file, node_set_name, selected_point_vtk_ids, set_type="node")
                 group_temp_dict = {}
                 group_temp_dict["node_set_name"] = node_set_name
                 group_temp_dict["group_name"] = groups_name
@@ -86,6 +95,7 @@ class FemModel():
         group_id = 1
         print(" ---- group name: %s, group id: %d -> anterior surface"%(group_name, group_id))
         surface_node_ids = np.where(self.mesh_wrapped.PointData[group_name]==group_id)[0]
+        print(surface_node_ids)
         surface = self.__get_surfaces(surface_node_ids)
         self.__write_abq_surface(sets_file, surface, "anterior_surface")
         group_id = 2
@@ -101,7 +111,7 @@ class FemModel():
         self.__write_abq_surface(sets_file, surface, "rim_surface")
         # -- close sets file
         sets_file.close()
-        
+
         # -- 4) write Material Properties
         self.__write_abq_comment(abq_file, ["MATERIAL"])
         abq_file.write("**\n")
@@ -178,6 +188,9 @@ class FemModel():
             surface = "S3"
         elif (n_3 and n_4 and n_1 and not n_2):
             surface = "S4"
+        else:
+            #print("None applies")
+            pass
         return surface
 
            
@@ -187,8 +200,11 @@ class FemModel():
         
         
     def __create_connectivity_table(self):
+        print("-- creating connectivity table")
         connect_pd = pd.DataFrame(columns=("cell_id", "node_1", "node_2", "node_3", "node_4"))
-        for _cell_id in range(self.mesh.GetNumberOfCells()):
+        cnt = 0
+        n = self.mesh.GetNumberOfCells()
+        for _cell_id in range(n):
             cell = self.mesh.GetCell(_cell_id)
             id_list = cell.GetPointIds()
             point_id_list = []
@@ -196,6 +212,9 @@ class FemModel():
                 point_id = id_list.GetId(_point_id)
                 point_id_list.append(point_id)
             connect_pd.loc[_cell_id] = [_cell_id] + point_id_list
+            cnt = cnt + 1
+            if cnt%5000==0:
+                print("- %i / %i"%(cnt, n))
         connect_pd = connect_pd.astype(int)
         self.connectivity_table = connect_pd
 
@@ -207,6 +226,7 @@ class FemModel():
         for surface_node_id in id_list:
             query_exp = "node_1==%i or node_2==%i or node_3==%i or node_4==%i"%(surface_node_id, surface_node_id, surface_node_id, surface_node_id)
             cell_id_list = cell_id_list + list(self.connectivity_table.query(query_exp)["cell_id"].values)
+            #print(query_exp, cell_id_list)
         unique_cell_ids = list(set(cell_id_list))
         return unique_cell_ids
 
@@ -216,14 +236,17 @@ class FemModel():
         # identify those cells that contain 3 surface nodes
         surface_pd = pd.DataFrame(columns=("cell_id", "surface"))
         sel_connect_pd = self.connectivity_table.loc[unique_cell_ids]
+        print(sel_connect_pd)
         for index, cell_id, node_1, node_2, node_3, node_4 in sel_connect_pd.itertuples():
             node_1_in = node_1 in id_list
             node_2_in = node_2 in id_list
             node_3_in = node_3 in id_list
             node_4_in = node_4 in id_list
+            #print("info: ", index, cell_id, node_1, node_2, node_3, node_4 )
             surface = self.__match_surface(node_1_in, node_2_in, node_3_in, node_4_in)
             if not surface==None:
                 surface_pd.loc[cell_id] = [cell_id, surface]
+            #print("surface: ",surface)
         surface_pd.cell_id = surface_pd.cell_id.astype(int)
         return surface_pd
         
@@ -316,9 +339,7 @@ class FemModel():
 
 
     def __write_abq_element_set_with_nodes(self, abq_file, element_set_name, element_set_type, selected_element_vtk_ids, rel_path_to_target_file = None):
-        print("====================>" , rel_path_to_target_file)
-
-        element_type =  element_set_type 
+        element_type =  element_set_type
         abq_file.write("**\n")
         abq_file.write("*ELEMENT, ELSET=%s, TYPE=%s \n"%(element_set_name, element_type))
         if rel_path_to_target_file == None:
