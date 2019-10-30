@@ -56,6 +56,12 @@ namespace cmt {
     double facet_size;
   } ;
 
+    struct mesh_criteria_global_lenticule_t {
+        double cell_size;
+        //double facet_distance;
+        double facet_size;
+    } ;
+
   struct cornea_generation_criteria_global_t {
     double max_number_zernike_coeffs;
     double surface_thickness;
@@ -122,6 +128,7 @@ namespace cmt {
     std::map<std::string, std::string> configuration_params;
     zernike::cornea cornea;
     mesh_criteria_global_t mesh_criteria_global;
+    mesh_criteria_global_lenticule_t mesh_criteria_global_lenticule;
     
   };
     

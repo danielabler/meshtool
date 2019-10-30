@@ -36,6 +36,11 @@ elementFormDefault="qualified" attributeFormDefault="unqualified">
     	<xs:attribute name="cell_size" type="xs:double" use="required"></xs:attribute>
 </xs:complexType>
 
+<xs:complexType name="MeshCriteriaGlobalTypeLenticule">
+    <xs:attribute name="facet_size" type="xs:double" use="required"></xs:attribute>
+    <xs:attribute name="cell_size" type="xs:double" use="required"></xs:attribute>
+</xs:complexType>
+
 <xs:complexType name="CorneaGenerationCriteriaGlobalType">
     	<xs:attribute name="max_number_zernike_coeffs" type="xs:int" use="required"></xs:attribute>
     	<xs:attribute name="surface_thickness" type="xs:double" use="required"></xs:attribute>
@@ -71,12 +76,14 @@ elementFormDefault="qualified" attributeFormDefault="unqualified">
       <xs:all>
           <xs:element name="AnteriorSurface" type="ZernikeSurfaceType"/>
           <xs:element name="PosteriorSurface" type="ZernikeSurfaceType"/>
+          <xs:element name="AnteriorSurfaceLenticule" type="ZernikeSurfaceType"  minOccurs="0" maxOccurs="1"/>
           <xs:element name="PosteriorSurfaceLenticule" type="ZernikeSurfaceType"  minOccurs="0" maxOccurs="1"/>
           <xs:element name="PupilRadius" type="xs:float"/>
           <xs:element name="SurfaceDistance" type="xs:float"/>
           <xs:element name="MeshCriteria" type="MeshCriteriaGlobalType"/>
           <xs:element name="CorneaGenerationCriteria" type="CorneaGenerationCriteriaGlobalType"/>
           <xs:element name="LenticuleGenerationCriteria" type="LenticuleGenerationCriteriaGlobalType" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="MeshCriteriaLenticule" type="MeshCriteriaGlobalTypeLenticule" minOccurs="0" maxOccurs="1"/>
           <xs:element name="CorneaBoundary" type="CorneaBoundaryType"/>
       </xs:all>
 </xs:complexType> 

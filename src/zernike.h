@@ -34,6 +34,7 @@ namespace zernike {
   struct cornea {
     zernike_surface surface_anterior;
     zernike_surface surface_posterior;
+    zernike_surface lenticule_surface_anterior;
     zernike_surface lenticule_surface_posterior;
     double pupil_radius ;
     double surface_distance;

@@ -226,6 +226,7 @@ class ZernikeCoefficientType;
 class ZernikeCoefficientType_single_index;
 class ZernikeSurfaceType;
 class MeshCriteriaGlobalType;
+class MeshCriteriaGlobalTypeLenticule;
 class CorneaGenerationCriteriaGlobalType;
 class LenticuleGenerationCriteriaGlobalType;
 class ConeBoundaryType;
@@ -546,6 +547,72 @@ class MeshCriteriaGlobalType: public ::xml_schema::type
   ::xsd::cxx::tree::one< facet_size_type > facet_size_;
   ::xsd::cxx::tree::one< facet_distance_type > facet_distance_;
   ::xsd::cxx::tree::one< cell_radius_edge_ratio_type > cell_radius_edge_ratio_;
+  ::xsd::cxx::tree::one< cell_size_type > cell_size_;
+};
+
+class MeshCriteriaGlobalTypeLenticule: public ::xml_schema::type
+{
+  public:
+  // facet_size
+  //
+  typedef ::xml_schema::double_ facet_size_type;
+  typedef ::xsd::cxx::tree::traits< facet_size_type, char, ::xsd::cxx::tree::schema_type::double_ > facet_size_traits;
+
+  const facet_size_type&
+  facet_size () const;
+
+  facet_size_type&
+  facet_size ();
+
+  void
+  facet_size (const facet_size_type& x);
+
+  // cell_size
+  //
+  typedef ::xml_schema::double_ cell_size_type;
+  typedef ::xsd::cxx::tree::traits< cell_size_type, char, ::xsd::cxx::tree::schema_type::double_ > cell_size_traits;
+
+  const cell_size_type&
+  cell_size () const;
+
+  cell_size_type&
+  cell_size ();
+
+  void
+  cell_size (const cell_size_type& x);
+
+  // Constructors.
+  //
+  MeshCriteriaGlobalTypeLenticule (const facet_size_type&,
+                                   const cell_size_type&);
+
+  MeshCriteriaGlobalTypeLenticule (const ::xercesc::DOMElement& e,
+                                   ::xml_schema::flags f = 0,
+                                   ::xml_schema::container* c = 0);
+
+  MeshCriteriaGlobalTypeLenticule (const MeshCriteriaGlobalTypeLenticule& x,
+                                   ::xml_schema::flags f = 0,
+                                   ::xml_schema::container* c = 0);
+
+  virtual MeshCriteriaGlobalTypeLenticule*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  MeshCriteriaGlobalTypeLenticule&
+  operator= (const MeshCriteriaGlobalTypeLenticule& x);
+
+  virtual 
+  ~MeshCriteriaGlobalTypeLenticule ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< facet_size_type > facet_size_;
   ::xsd::cxx::tree::one< cell_size_type > cell_size_;
 };
 
@@ -980,6 +1047,27 @@ class CorneaMeshingParametersType: public ::xml_schema::type
   void
   PosteriorSurface (::std::auto_ptr< PosteriorSurface_type > p);
 
+  // AnteriorSurfaceLenticule
+  //
+  typedef ::ZernikeSurfaceType AnteriorSurfaceLenticule_type;
+  typedef ::xsd::cxx::tree::optional< AnteriorSurfaceLenticule_type > AnteriorSurfaceLenticule_optional;
+  typedef ::xsd::cxx::tree::traits< AnteriorSurfaceLenticule_type, char > AnteriorSurfaceLenticule_traits;
+
+  const AnteriorSurfaceLenticule_optional&
+  AnteriorSurfaceLenticule () const;
+
+  AnteriorSurfaceLenticule_optional&
+  AnteriorSurfaceLenticule ();
+
+  void
+  AnteriorSurfaceLenticule (const AnteriorSurfaceLenticule_type& x);
+
+  void
+  AnteriorSurfaceLenticule (const AnteriorSurfaceLenticule_optional& x);
+
+  void
+  AnteriorSurfaceLenticule (::std::auto_ptr< AnteriorSurfaceLenticule_type > p);
+
   // PosteriorSurfaceLenticule
   //
   typedef ::ZernikeSurfaceType PosteriorSurfaceLenticule_type;
@@ -1084,6 +1172,27 @@ class CorneaMeshingParametersType: public ::xml_schema::type
   void
   LenticuleGenerationCriteria (::std::auto_ptr< LenticuleGenerationCriteria_type > p);
 
+  // MeshCriteriaLenticule
+  //
+  typedef ::MeshCriteriaGlobalTypeLenticule MeshCriteriaLenticule_type;
+  typedef ::xsd::cxx::tree::optional< MeshCriteriaLenticule_type > MeshCriteriaLenticule_optional;
+  typedef ::xsd::cxx::tree::traits< MeshCriteriaLenticule_type, char > MeshCriteriaLenticule_traits;
+
+  const MeshCriteriaLenticule_optional&
+  MeshCriteriaLenticule () const;
+
+  MeshCriteriaLenticule_optional&
+  MeshCriteriaLenticule ();
+
+  void
+  MeshCriteriaLenticule (const MeshCriteriaLenticule_type& x);
+
+  void
+  MeshCriteriaLenticule (const MeshCriteriaLenticule_optional& x);
+
+  void
+  MeshCriteriaLenticule (::std::auto_ptr< MeshCriteriaLenticule_type > p);
+
   // CorneaBoundary
   //
   typedef ::CorneaBoundaryType CorneaBoundary_type;
@@ -1147,12 +1256,14 @@ class CorneaMeshingParametersType: public ::xml_schema::type
   protected:
   ::xsd::cxx::tree::one< AnteriorSurface_type > AnteriorSurface_;
   ::xsd::cxx::tree::one< PosteriorSurface_type > PosteriorSurface_;
+  AnteriorSurfaceLenticule_optional AnteriorSurfaceLenticule_;
   PosteriorSurfaceLenticule_optional PosteriorSurfaceLenticule_;
   ::xsd::cxx::tree::one< PupilRadius_type > PupilRadius_;
   ::xsd::cxx::tree::one< SurfaceDistance_type > SurfaceDistance_;
   ::xsd::cxx::tree::one< MeshCriteria_type > MeshCriteria_;
   ::xsd::cxx::tree::one< CorneaGenerationCriteria_type > CorneaGenerationCriteria_;
   LenticuleGenerationCriteria_optional LenticuleGenerationCriteria_;
+  MeshCriteriaLenticule_optional MeshCriteriaLenticule_;
   ::xsd::cxx::tree::one< CorneaBoundary_type > CorneaBoundary_;
 };
 

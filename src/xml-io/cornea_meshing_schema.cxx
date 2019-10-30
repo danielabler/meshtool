@@ -236,6 +236,46 @@ cell_size (const cell_size_type& x)
 }
 
 
+// MeshCriteriaGlobalTypeLenticule
+// 
+
+const MeshCriteriaGlobalTypeLenticule::facet_size_type& MeshCriteriaGlobalTypeLenticule::
+facet_size () const
+{
+  return this->facet_size_.get ();
+}
+
+MeshCriteriaGlobalTypeLenticule::facet_size_type& MeshCriteriaGlobalTypeLenticule::
+facet_size ()
+{
+  return this->facet_size_.get ();
+}
+
+void MeshCriteriaGlobalTypeLenticule::
+facet_size (const facet_size_type& x)
+{
+  this->facet_size_.set (x);
+}
+
+const MeshCriteriaGlobalTypeLenticule::cell_size_type& MeshCriteriaGlobalTypeLenticule::
+cell_size () const
+{
+  return this->cell_size_.get ();
+}
+
+MeshCriteriaGlobalTypeLenticule::cell_size_type& MeshCriteriaGlobalTypeLenticule::
+cell_size ()
+{
+  return this->cell_size_.get ();
+}
+
+void MeshCriteriaGlobalTypeLenticule::
+cell_size (const cell_size_type& x)
+{
+  this->cell_size_.set (x);
+}
+
+
 // CorneaGenerationCriteriaGlobalType
 // 
 
@@ -571,6 +611,36 @@ PosteriorSurface (::std::auto_ptr< PosteriorSurface_type > x)
   this->PosteriorSurface_.set (x);
 }
 
+const CorneaMeshingParametersType::AnteriorSurfaceLenticule_optional& CorneaMeshingParametersType::
+AnteriorSurfaceLenticule () const
+{
+  return this->AnteriorSurfaceLenticule_;
+}
+
+CorneaMeshingParametersType::AnteriorSurfaceLenticule_optional& CorneaMeshingParametersType::
+AnteriorSurfaceLenticule ()
+{
+  return this->AnteriorSurfaceLenticule_;
+}
+
+void CorneaMeshingParametersType::
+AnteriorSurfaceLenticule (const AnteriorSurfaceLenticule_type& x)
+{
+  this->AnteriorSurfaceLenticule_.set (x);
+}
+
+void CorneaMeshingParametersType::
+AnteriorSurfaceLenticule (const AnteriorSurfaceLenticule_optional& x)
+{
+  this->AnteriorSurfaceLenticule_ = x;
+}
+
+void CorneaMeshingParametersType::
+AnteriorSurfaceLenticule (::std::auto_ptr< AnteriorSurfaceLenticule_type > x)
+{
+  this->AnteriorSurfaceLenticule_.set (x);
+}
+
 const CorneaMeshingParametersType::PosteriorSurfaceLenticule_optional& CorneaMeshingParametersType::
 PosteriorSurfaceLenticule () const
 {
@@ -713,6 +783,36 @@ void CorneaMeshingParametersType::
 LenticuleGenerationCriteria (::std::auto_ptr< LenticuleGenerationCriteria_type > x)
 {
   this->LenticuleGenerationCriteria_.set (x);
+}
+
+const CorneaMeshingParametersType::MeshCriteriaLenticule_optional& CorneaMeshingParametersType::
+MeshCriteriaLenticule () const
+{
+  return this->MeshCriteriaLenticule_;
+}
+
+CorneaMeshingParametersType::MeshCriteriaLenticule_optional& CorneaMeshingParametersType::
+MeshCriteriaLenticule ()
+{
+  return this->MeshCriteriaLenticule_;
+}
+
+void CorneaMeshingParametersType::
+MeshCriteriaLenticule (const MeshCriteriaLenticule_type& x)
+{
+  this->MeshCriteriaLenticule_.set (x);
+}
+
+void CorneaMeshingParametersType::
+MeshCriteriaLenticule (const MeshCriteriaLenticule_optional& x)
+{
+  this->MeshCriteriaLenticule_ = x;
+}
+
+void CorneaMeshingParametersType::
+MeshCriteriaLenticule (::std::auto_ptr< MeshCriteriaLenticule_type > x)
+{
+  this->MeshCriteriaLenticule_.set (x);
 }
 
 const CorneaMeshingParametersType::CorneaBoundary_type& CorneaMeshingParametersType::
@@ -1174,6 +1274,106 @@ operator= (const MeshCriteriaGlobalType& x)
 
 MeshCriteriaGlobalType::
 ~MeshCriteriaGlobalType ()
+{
+}
+
+// MeshCriteriaGlobalTypeLenticule
+//
+
+MeshCriteriaGlobalTypeLenticule::
+MeshCriteriaGlobalTypeLenticule (const facet_size_type& facet_size,
+                                 const cell_size_type& cell_size)
+: ::xml_schema::type (),
+  facet_size_ (facet_size, this),
+  cell_size_ (cell_size, this)
+{
+}
+
+MeshCriteriaGlobalTypeLenticule::
+MeshCriteriaGlobalTypeLenticule (const MeshCriteriaGlobalTypeLenticule& x,
+                                 ::xml_schema::flags f,
+                                 ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  facet_size_ (x.facet_size_, f, this),
+  cell_size_ (x.cell_size_, f, this)
+{
+}
+
+MeshCriteriaGlobalTypeLenticule::
+MeshCriteriaGlobalTypeLenticule (const ::xercesc::DOMElement& e,
+                                 ::xml_schema::flags f,
+                                 ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  facet_size_ (this),
+  cell_size_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, false, false, true);
+    this->parse (p, f);
+  }
+}
+
+void MeshCriteriaGlobalTypeLenticule::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  while (p.more_attributes ())
+  {
+    const ::xercesc::DOMAttr& i (p.next_attribute ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    if (n.name () == "facet_size" && n.namespace_ ().empty ())
+    {
+      this->facet_size_.set (facet_size_traits::create (i, f, this));
+      continue;
+    }
+
+    if (n.name () == "cell_size" && n.namespace_ ().empty ())
+    {
+      this->cell_size_.set (cell_size_traits::create (i, f, this));
+      continue;
+    }
+  }
+
+  if (!facet_size_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "facet_size",
+      "");
+  }
+
+  if (!cell_size_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_attribute< char > (
+      "cell_size",
+      "");
+  }
+}
+
+MeshCriteriaGlobalTypeLenticule* MeshCriteriaGlobalTypeLenticule::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class MeshCriteriaGlobalTypeLenticule (*this, f, c);
+}
+
+MeshCriteriaGlobalTypeLenticule& MeshCriteriaGlobalTypeLenticule::
+operator= (const MeshCriteriaGlobalTypeLenticule& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->facet_size_ = x.facet_size_;
+    this->cell_size_ = x.cell_size_;
+  }
+
+  return *this;
+}
+
+MeshCriteriaGlobalTypeLenticule::
+~MeshCriteriaGlobalTypeLenticule ()
 {
 }
 
@@ -1748,12 +1948,14 @@ CorneaMeshingParametersType (const AnteriorSurface_type& AnteriorSurface,
 : ::xml_schema::type (),
   AnteriorSurface_ (AnteriorSurface, this),
   PosteriorSurface_ (PosteriorSurface, this),
+  AnteriorSurfaceLenticule_ (this),
   PosteriorSurfaceLenticule_ (this),
   PupilRadius_ (PupilRadius, this),
   SurfaceDistance_ (SurfaceDistance, this),
   MeshCriteria_ (MeshCriteria, this),
   CorneaGenerationCriteria_ (CorneaGenerationCriteria, this),
   LenticuleGenerationCriteria_ (this),
+  MeshCriteriaLenticule_ (this),
   CorneaBoundary_ (CorneaBoundary, this)
 {
 }
@@ -1769,12 +1971,14 @@ CorneaMeshingParametersType (::std::auto_ptr< AnteriorSurface_type > AnteriorSur
 : ::xml_schema::type (),
   AnteriorSurface_ (AnteriorSurface, this),
   PosteriorSurface_ (PosteriorSurface, this),
+  AnteriorSurfaceLenticule_ (this),
   PosteriorSurfaceLenticule_ (this),
   PupilRadius_ (PupilRadius, this),
   SurfaceDistance_ (SurfaceDistance, this),
   MeshCriteria_ (MeshCriteria, this),
   CorneaGenerationCriteria_ (CorneaGenerationCriteria, this),
   LenticuleGenerationCriteria_ (this),
+  MeshCriteriaLenticule_ (this),
   CorneaBoundary_ (CorneaBoundary, this)
 {
 }
@@ -1786,12 +1990,14 @@ CorneaMeshingParametersType (const CorneaMeshingParametersType& x,
 : ::xml_schema::type (x, f, c),
   AnteriorSurface_ (x.AnteriorSurface_, f, this),
   PosteriorSurface_ (x.PosteriorSurface_, f, this),
+  AnteriorSurfaceLenticule_ (x.AnteriorSurfaceLenticule_, f, this),
   PosteriorSurfaceLenticule_ (x.PosteriorSurfaceLenticule_, f, this),
   PupilRadius_ (x.PupilRadius_, f, this),
   SurfaceDistance_ (x.SurfaceDistance_, f, this),
   MeshCriteria_ (x.MeshCriteria_, f, this),
   CorneaGenerationCriteria_ (x.CorneaGenerationCriteria_, f, this),
   LenticuleGenerationCriteria_ (x.LenticuleGenerationCriteria_, f, this),
+  MeshCriteriaLenticule_ (x.MeshCriteriaLenticule_, f, this),
   CorneaBoundary_ (x.CorneaBoundary_, f, this)
 {
 }
@@ -1803,12 +2009,14 @@ CorneaMeshingParametersType (const ::xercesc::DOMElement& e,
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   AnteriorSurface_ (this),
   PosteriorSurface_ (this),
+  AnteriorSurfaceLenticule_ (this),
   PosteriorSurfaceLenticule_ (this),
   PupilRadius_ (this),
   SurfaceDistance_ (this),
   MeshCriteria_ (this),
   CorneaGenerationCriteria_ (this),
   LenticuleGenerationCriteria_ (this),
+  MeshCriteriaLenticule_ (this),
   CorneaBoundary_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
@@ -1852,6 +2060,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       if (!PosteriorSurface_.present ())
       {
         this->PosteriorSurface_.set (r);
+        continue;
+      }
+    }
+
+    // AnteriorSurfaceLenticule
+    //
+    if (n.name () == "AnteriorSurfaceLenticule" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< AnteriorSurfaceLenticule_type > r (
+        AnteriorSurfaceLenticule_traits::create (i, f, this));
+
+      if (!this->AnteriorSurfaceLenticule_)
+      {
+        this->AnteriorSurfaceLenticule_.set (r);
         continue;
       }
     }
@@ -1930,6 +2152,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       if (!this->LenticuleGenerationCriteria_)
       {
         this->LenticuleGenerationCriteria_.set (r);
+        continue;
+      }
+    }
+
+    // MeshCriteriaLenticule
+    //
+    if (n.name () == "MeshCriteriaLenticule" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< MeshCriteriaLenticule_type > r (
+        MeshCriteriaLenticule_traits::create (i, f, this));
+
+      if (!this->MeshCriteriaLenticule_)
+      {
+        this->MeshCriteriaLenticule_.set (r);
         continue;
       }
     }
@@ -2016,12 +2252,14 @@ operator= (const CorneaMeshingParametersType& x)
     static_cast< ::xml_schema::type& > (*this) = x;
     this->AnteriorSurface_ = x.AnteriorSurface_;
     this->PosteriorSurface_ = x.PosteriorSurface_;
+    this->AnteriorSurfaceLenticule_ = x.AnteriorSurfaceLenticule_;
     this->PosteriorSurfaceLenticule_ = x.PosteriorSurfaceLenticule_;
     this->PupilRadius_ = x.PupilRadius_;
     this->SurfaceDistance_ = x.SurfaceDistance_;
     this->MeshCriteria_ = x.MeshCriteria_;
     this->CorneaGenerationCriteria_ = x.CorneaGenerationCriteria_;
     this->LenticuleGenerationCriteria_ = x.LenticuleGenerationCriteria_;
+    this->MeshCriteriaLenticule_ = x.MeshCriteriaLenticule_;
     this->CorneaBoundary_ = x.CorneaBoundary_;
   }
 

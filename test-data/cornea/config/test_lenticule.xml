@@ -11,6 +11,11 @@
     <ZernikeCoefficient n="2" m="0">0.181499000000000</ZernikeCoefficient>
     <ZernikeCoefficient n="2" m="2">0.00903720000000000</ZernikeCoefficient>
   </PosteriorSurface>
+  <AnteriorSurfaceLenticule>
+    <ZernikeCoefficient n="0" m="0">0.309911700000000</ZernikeCoefficient>
+    <ZernikeCoefficient n="2" m="0">0.181499000000000</ZernikeCoefficient>
+    <ZernikeCoefficient n="2" m="2">0.0180745000000000</ZernikeCoefficient>
+  </AnteriorSurfaceLenticule>
   <PosteriorSurfaceLenticule>
     <ZernikeCoefficient n="0" m="0">0.309911700000000</ZernikeCoefficient>
     <ZernikeCoefficient n="2" m="-2"> -0.0156530000000000</ZernikeCoefficient>
@@ -19,10 +24,11 @@
   </PosteriorSurfaceLenticule>
   <PupilRadius>3</PupilRadius>
   <SurfaceDistance>0.5</SurfaceDistance>
-  <MeshCriteria cell_radius_edge_ratio="2.1" cell_size="0.1" facet_angle="30.0" facet_distance="0.05" facet_size="0.4"/>
+  <MeshCriteria cell_radius_edge_ratio="2.1" cell_size="0.4" facet_angle="25.0" facet_distance="0.3" facet_size="0.4"/>
+  <MeshCriteriaLenticule cell_size="0.03" facet_size="0.02"/>
   <CorneaGenerationCriteria max_number_zernike_coeffs="10" surface_thickness="1.0" offset_along_z="1.0" path_to_output="test-data/cornea/output/test.vtu"/>
   <LenticuleGenerationCriteria max_number_zernike_coeffs="10" lenticule_radius="2" cap_thickness="0.1"
-                               lenticule_thickness="1" lenticule_surface_distance="0.15"/>
+                               lenticule_thickness="1" lenticule_surface_distance="0.05"/>
   <CorneaBoundary>
     <Cone angle="45" />
     <!--Cylinder radius="3" /-->
