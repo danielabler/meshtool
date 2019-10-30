@@ -60,11 +60,12 @@ class FemModel():
         elsets = chf.get_unique_integer_list_from_vtu_array(self.mesh, "cell_array", "ElementBlockIds")
         elset_dict = {1 : "cornea", 3: "lenticule"}
         for elsetid in elsets:
-            elset_name = "ELSET_%s"%(elset_dict[elsetid])
-            print("Creating ElementSets for '%s'"%elset_name)
-            selected_cell_vtk_ids = np.where(self.mesh_wrapped.CellData["ElementBlockIds"]==elsetid)[0]
-            self.__write_abq_set(sets_file, elset_name, selected_cell_vtk_ids, set_type="element")
-            #self.__write_abq_element_set_2(abq_file, elset_name, selected_cell_vtk_ids, "./sets/elements.inp")
+            if elsetid in elset_dict.keys():
+                elset_name = "ELSET_%s"%(elset_dict[elsetid])
+                print("Creating ElementSets for '%s'"%elset_name)
+                selected_cell_vtk_ids = np.where(self.mesh_wrapped.CellData["ElementBlockIds"]==elsetid)[0]
+                self.__write_abq_set(sets_file, elset_name, selected_cell_vtk_ids, set_type="element")
+                #self.__write_abq_element_set_2(abq_file, elset_name, selected_cell_vtk_ids, "./sets/elements.inp")
         self.__write_abq_comment(abq_file, ["SET DEFINITIONS"])
         #-- 3.3) Nodesets for groups
         # rim_group, id==3 -> rim with all nodes on rim belonging to rim

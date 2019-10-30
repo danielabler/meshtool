@@ -2,21 +2,25 @@
 
 ## Introduction ##
 
-* *MeshTool* is a c++ tool for creating FEM meshes. The tool produces VTK 3D meshes (vtkUnstructuredGrid) as output.
+* *MeshTool* is a CGAL-based c++ tool for creating FEM meshes. The tool produces VTK 3D meshes (vtkUnstructuredGrid) as output.
  Currently, two applications are supported:
   * Creation of cornea meshes from Zernike-parameters of anterior and posterior surface.
   * Creation of meshes from image segmentations. 
 * Folder  <base_dir>\pre-post-processing\ contains scripts for generating Abaqus input files from these VTK meshes.
 
+
 ## Usage ##
 
+### Installation
+
+Quickest way to install is to use the docker or singularity container as explained [here](https://github.com/danielabler/dockerfiles/tree/master/meshtool).
 ### Commandline Parameters ###
 
 From <base_dir>\bin:
 
 ```#!shell
 
-./bin/MeshTool -c <path_to_configuration_file> -x <path_to_xml_schema_file> -m <mode>
+./bin/MeshTool -c <path_to_configuration_file> -m <mode>
 ```
 
 Where 
@@ -24,8 +28,6 @@ Where
 * **base_dir** is the installation path of the MeshTool project.
 * **path_to_configuration_file** is the path (relative or absolute) to a xml configuration file.
 * **mode** is the operational model of the tool, currently one of `'cornea'`, or `'image'`.
-* **path_to_xml_schema_file** is the path (absolute) to the schema definition file of the corresponding mode, see below.
-  In case you wonder, yes, this information is redundant and the CLI can certainly be improved ;-)  
 
 
 ### Image Meshing Mode ###
@@ -85,20 +87,25 @@ Main Configuration options:
 
 * Lenticule:
 
+    * Anterior surface for lenticule
     * Posterior surface for lenticule
     * Lenticule configuration, in particular
-    
         * lenticule radius
         * lenticule cap thickness: distance between anterior cornea surface and anterior lenticule surface
         * lenticule surface distance: distance between anterior and posterior lenticule surface
         * lenticule thickness: only relevant for generation of 3D volume by intersection of 2 volumes; 
           value should greater than  lenticule surface distance
+    * Meshing criteria for lenticule
 
 * Mesh Criteria, based on [CGAL mesh criteria](http://doc.cgal.org/latest/Mesh_3/classCGAL_1_1Mesh__criteria__3.html)
 
 ### Conversion to Abaqus .inp ###
 
 * <base_dir>\pre-post-processing\create_abaqus.py provides an example configuration for generating Abaqus *.inp input files from the resulting VTK *.vtu meshes.
+* <base_dir>\pre-post-processing\create_abq.py provides a command line interface for this conversion:
+  ```shell script
+  python  <base_dir>\pre-post-processing\create_abq.py -i <path_to_vtu_input> -o <path_to_inp_output> -p <base_dir>\pre-post-processing
+  ```
 
 
 ## Development ##
