@@ -99,6 +99,20 @@ Main Configuration options:
 
 * Mesh Criteria, based on [CGAL mesh criteria](http://doc.cgal.org/latest/Mesh_3/classCGAL_1_1Mesh__criteria__3.html)
 
+### Usage with Docker
+
+Instructions for compilation and usage with Docker are available [here](https://github.com/danielabler/dockerfiles/tree/master/meshtool).
+A pre-built docker image can be downloaded from (https://cloud.docker.com/u/danabl/repository/docker/danabl/meshtool).
+```#!shell
+docker pull danabl/meshtool:latest
+```
+
+To run image meshing directly via docker, pull docker image as above and clone this repository to </path/to/repository>:
+```#!shell
+ cd </path/to/repository>****
+ docker run -v </path/to/repository>:/shared danabl/meshtool MeshTool -c /shared/test-data/image/config/image-to-mesh_brain-atlas -m image```
+```
+
 ### Conversion to Abaqus .inp ###
 
 * <base_dir>\pre-post-processing\create_abaqus.py provides an example configuration for generating Abaqus *.inp input files from the resulting VTK *.vtu meshes.
